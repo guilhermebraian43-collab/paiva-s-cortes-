@@ -6,252 +6,487 @@
     <title>Paiva's Cortes - Agendamento</title>
     <style>
         :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --input-bg: #2a2a2a;
-            --accent-color: #d4af37; /* Dourado Barbearia */
-            --accent-hover: #b5932a;
-            --text-color: #ffffff;
-            --text-secondary: #a0a0a0;
-            --border-color: #333333;
+            --bg-color: #12100e;
+            --card-bg: #1c1a17;
+            --text-color: #f5f5f5;
+            --text-muted: #8e8b85;
+            --accent-color: #6bbce8;
+            --border-color: #2a2723;
+            --hover-bg: #26231f;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px 15px;
+            padding: 20px;
         }
 
-        .container {
+        .main-wrapper {
             width: 100%;
-            max-width: 450px;
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 25px 20px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border-color);
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
         }
 
-        .header {
-            text-align: center;
+        /* Header / Navbar */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 40px;
+        }
+
+        .logo-area h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .logo-area span {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 400;
+            margin-left: 8px;
+        }
+
+        .header-info {
+            text-align: right;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .header-info a {
+            color: var(--text-color);
+            text-decoration: underline;
+            margin-left: 15px;
+        }
+
+        /* Banner Hero */
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+        }
+
+        .hero-text h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+
+        .hero-text p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            max-width: 400px;
+        }
+
+        .hero-icon svg {
+            width: 60px;
+            height: 60px;
+            stroke: var(--accent-color);
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        /* Layout em Duas Colunas */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 40px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 30px;
+        }
+
+        /* Menu Lateral (Etapas) */
+        .step-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .step-item {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+
+        .step-item.active {
+            color: var(--text-color);
+            font-weight: 700;
+        }
+
+        .step-item span {
+            margin-right: 10px;
+        }
+
+        /* Painel Principal */
+        .step-panel {
+            display: none;
+        }
+
+        .step-panel.active {
+            display: block;
+        }
+
+        .panel-header {
             margin-bottom: 25px;
         }
 
-        .header h1 {
-            font-size: 1.8rem;
-            color: var(--accent-color);
-            letter-spacing: 1px;
-            text-transform: uppercase;
+        .panel-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 5px;
         }
 
-        .header p {
-            color: var(--text-secondary);
+        .panel-header p {
+            color: var(--text-muted);
             font-size: 0.9rem;
-            margin-top: 5px;
         }
 
+        /* Lista de Serviços */
+        .service-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .service-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .service-card:hover {
+            background-color: var(--hover-bg);
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .service-card.selected {
+            border-left: 3px solid var(--accent-color);
+            padding-left: 12px;
+        }
+
+        .service-info h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .service-info span {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .service-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        /* Entradas de Formulário */
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
 
-        label {
+        .form-group label {
             display: block;
             font-size: 0.85rem;
-            font-weight: 600;
+            color: var(--text-muted);
             margin-bottom: 8px;
-            color: var(--text-color);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         input, select, textarea {
             width: 100%;
-            padding: 12px 15px;
-            background-color: var(--input-bg);
+            padding: 14px;
+            background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 6px;
             color: var(--text-color);
-            font-size: 0.95rem;
+            font-size: 1rem;
             outline: none;
-            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         input:focus, select:focus, textarea:focus {
             border-color: var(--accent-color);
-            box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
         }
 
-        .row {
-            display: flex;
-            gap: 12px;
-        }
-
-        .row .form-group {
-            flex: 1;
-        }
-
-        #addressGroup {
-            display: none;
-        }
-
-        .btn-submit {
+        .btn-action {
             width: 100%;
-            padding: 14px;
-            background-color: var(--accent-color);
-            color: #121212;
+            padding: 16px;
+            background-color: var(--text-color);
+            color: var(--bg-color);
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 1rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-weight: 700;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s;
-            margin-top: 10px;
+            margin-top: 15px;
+            transition: opacity 0.2s;
         }
 
-        .btn-submit:hover {
-            background-color: var(--accent-hover);
+        .btn-action:hover {
+            opacity: 0.9;
         }
 
-        .btn-submit:active {
-            transform: scale(0.98);
-        }
+        /* Responsividade para Telas Pequenas */
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
 
-        footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
+            .hero-text h2 {
+                font-size: 2.2rem;
+            }
+
+            .hero-icon {
+                display: none;
+            }
+
+            .step-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+
+            .step-item {
+                white-space: nowrap;
+                border-bottom: none;
+                border-right: 1px solid var(--border-color);
+                padding-right: 15px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <h1>Paiva's Cortes</h1>
-            <p>Agende seu horário com praticidade</p>
+    <div class="main-wrapper">
+        <header>
+            <div class="logo-area">
+                <h1>Paiva’s Cortes</h1>
+                <span>Barbearia</span>
+            </div>
+            <div class="header-info">
+                <div>Ter–Sáb, 9h–19h</div>
+                <div style="margin-top:2px;">Fechado dom. e seg.</div>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div class="hero-text">
+                <h2>Reserve<br>seu horário.</h2>
+                <p>Escolha o serviço, o dia e o horário. Confirmação na hora, sem complicação.</p>
+            </div>
+            <div class="hero-icon">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="6" cy="6" r="3"></circle>
+                    <circle cx="6" cy="18" r="3"></circle>
+                    <line x1="20" y1="4" x2="8.12" y2="15.88"></line>
+                    <line x1="14.47" y1="14.48" x2="20" y2="20"></line>
+                    <line x1="8.12" y1="8.12" x2="12" y2="12"></line>
+                </svg>
+            </div>
+        </section>
+
+        <div class="content-grid">
+            <nav class="step-menu">
+                <div class="step-item active" id="menu-1" onclick="goToStep(1)"><span>01</span> Serviço</div>
+                <div class="step-item" id="menu-2" onclick="goToStep(2)"><span>02</span> Data</div>
+                <div class="step-item" id="menu-3" onclick="goToStep(3)"><span>03</span> Horário</div>
+                <div class="step-item" id="menu-4" onclick="goToStep(4)"><span>04</span> Seus dados</div>
+            </nav>
+
+            <main class="panel-container">
+                <!-- Etapa 1: Serviço -->
+                <div class="step-panel active" id="panel-1">
+                    <div class="panel-header">
+                        <h3>Escolha o serviço</h3>
+                        <p>Selecione o que você quer fazer hoje.</p>
+                    </div>
+                    <div class="service-list">
+                        <div class="service-card" onclick="selectService('Corte', 'R$ 40,00', '40 min')">
+                            <div class="service-info">
+                                <h4>Corte</h4>
+                                <span>40 min</span>
+                            </div>
+                            <div class="service-price">R$ 40,00</div>
+                        </div>
+                        <div class="service-card" onclick="selectService('Barba', 'R$ 30,00', '25 min')">
+                            <div class="service-info">
+                                <h4>Barba</h4>
+                                <span>25 min</span>
+                            </div>
+                            <div class="service-price">R$ 30,00</div>
+                        </div>
+                        <div class="service-card" onclick="selectService('Corte + Barba', 'R$ 65,00', '60 min')">
+                            <div class="service-info">
+                                <h4>Corte + Barba</h4>
+                                <span>60 min</span>
+                            </div>
+                            <div class="service-price">R$ 65,00</div>
+                        </div>
+                        <div class="service-card" onclick="selectService('Sobrancelha', 'R$ 15,00', '15 min')">
+                            <div class="service-info">
+                                <h4>Sobrancelha</h4>
+                                <span>15 min</span>
+                            </div>
+                            <div class="service-price">R$ 15,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Etapa 2: Data -->
+                <div class="step-panel" id="panel-2">
+                    <div class="panel-header">
+                        <h3>Escolha a data</h3>
+                        <p>Selecione o dia do seu atendimento.</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="dateInput">Data</label>
+                        <input type="date" id="dateInput">
+                    </div>
+                    <button class="btn-action" onclick="goToStep(3)">Avançar para Horário</button>
+                </div>
+
+                <!-- Etapa 3: Horário -->
+                <div class="step-panel" id="panel-3">
+                    <div class="panel-header">
+                        <h3>Escolha o horário</h3>
+                        <p>Selecione o melhor horário para você.</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="timeInput">Horário disponível</label>
+                        <input type="time" id="timeInput">
+                    </div>
+                    <button class="btn-action" onclick="goToStep(4)">Avançar para Seus Dados</button>
+                </div>
+
+                <!-- Etapa 4: Seus dados -->
+                <div class="step-panel" id="panel-4">
+                    <div class="panel-header">
+                        <h3>Seus dados</h3>
+                        <p>Preencha com suas informações para finalizar.</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="locationInput">Local do Atendimento</label>
+                        <select id="locationInput" onchange="toggleAddress()">
+                            <option value="Na barbearia">Na barbearia</option>
+                            <option value="Na minha casa">Na minha casa</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="addressGroup" style="display: none;">
+                        <label for="addressInput">Endereço Completo</label>
+                        <textarea id="addressInput" rows="2" placeholder="Rua, número, bairro e referência"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="nameInput">Nome Completo</label>
+                        <input type="text" id="nameInput" placeholder="Seu nome">
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneInput">Telefone / WhatsApp</label>
+                        <input type="tel" id="phoneInput" placeholder="(94) 99999-9999">
+                    </div>
+                    <button class="btn-action" onclick="finishBooking()">Confirmar no WhatsApp</button>
+                </div>
+            </main>
         </div>
-
-        <form id="bookingForm">
-            <div class="form-group">
-                <label for="service">Serviço</label>
-                <select id="service" required>
-                    <option value="" disabled selected>Selecione um serviço</option>
-                    <option value="Corte (R$ 35,00)">Corte — R$ 35,00</option>
-                    <option value="Barba (R$ 25,00)">Barba — R$ 25,00</option>
-                    <option value="Corte + Barba (R$ 55,00)">Corte + Barba — R$ 55,00</option>
-                </select>
-            </div>
-
-            <div class="row">
-                <div class="form-group">
-                    <label for="date">Data</label>
-                    <input type="date" id="date" required>
-                </div>
-                <div class="form-group">
-                    <label for="time">Horário</label>
-                    <input type="time" id="time" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="location">Local de Atendimento</label>
-                <select id="location" required>
-                    <option value="Na barbearia" selected>Na barbearia</option>
-                    <option value="Na minha casa">Na minha casa</option>
-                </select>
-            </div>
-
-            <div class="form-group" id="addressGroup">
-                <label for="address">Endereço Completo</label>
-                <textarea id="address" rows="2" placeholder="Rua, número, bairro e ponto de referência"></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="name">Nome Completo</label>
-                <input type="text" id="name" placeholder="Digite seu nome" required>
-            </div>
-
-            <div class="form-group">
-                <label for="phone">Telefone / WhatsApp</label>
-                <input type="tel" id="phone" placeholder="(94) 99999-9999" required>
-            </div>
-
-            <button type="submit" class="btn-submit">Confirmar Agendamento</button>
-        </form>
-
-        <footer>
-            &copy; Paiva's Cortes. Todos os direitos reservados.
-        </footer>
     </div>
 
     <script>
-        const locationSelect = document.getElementById('location');
-        const addressGroup = document.getElementById('addressGroup');
-        const addressInput = document.getElementById('address');
-        const bookingForm = document.getElementById('bookingForm');
+        let selectedServiceData = null;
 
-        // Alternar exibição do campo de endereço com base no local escolhido
-        locationSelect.addEventListener('change', function () {
-            if (this.value === 'Na minha casa') {
-                addressGroup.style.display = 'block';
-                addressInput.setAttribute('required', 'true');
-            } else {
-                addressGroup.style.display = 'none';
-                addressInput.removeAttribute('required');
-                addressInput.value = '';
+        function goToStep(step) {
+            if (step > 1 && !selectedServiceData) {
+                alert("Por favor, selecione um serviço primeiro.");
+                return;
             }
-        });
 
-        // Formatação do envio do formulário para o WhatsApp
-        bookingForm.addEventListener('submit', function (e) {
-            e.preventDefault();
+            document.querySelectorAll('.step-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.step-panel').forEach(el => el.classList.remove('active'));
 
-            const service = document.getElementById('service').value;
-            const dateRaw = document.getElementById('date').value;
-            const time = document.getElementById('time').value;
-            const location = document.getElementById('location').value;
-            const address = document.getElementById('address').value;
-            const name = document.getElementById('name').value;
-            const phone = document.getElementById('phone').value;
+            document.getElementById(`menu-${step}`).classList.add('active');
+            document.getElementById(`panel-${step}`).classList.add('active');
+        }
 
-            // Formata a data para o padrão DD/MM/AAAA
-            const dateParts = dateRaw.split('-');
+        function selectService(name, price, duration) {
+            selectedServiceData = { name, price, duration };
+            
+            document.querySelectorAll('.service-card').forEach(el => el.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+
+            setTimeout(() => {
+                goToStep(2);
+            }, 200);
+        }
+
+        function toggleAddress() {
+            const loc = document.getElementById('locationInput').value;
+            const group = document.getElementById('addressGroup');
+            group.style.display = loc === 'Na minha casa' ? 'block' : 'none';
+        }
+
+        function finishBooking() {
+            const dateVal = document.getElementById('dateInput').value;
+            const timeVal = document.getElementById('timeInput').value;
+            const locationVal = document.getElementById('locationInput').value;
+            const addressVal = document.getElementById('addressInput').value;
+            const nameVal = document.getElementById('nameInput').value;
+            const phoneVal = document.getElementById('phoneInput').value;
+
+            if (!dateVal || !timeVal || !nameVal || !phoneVal) {
+                alert("Por favor, preencha todos os campos obrigatórios.");
+                return;
+            }
+
+            if (locationVal === 'Na minha casa' && !addressVal) {
+                alert("Por favor, preencha o seu endereço.");
+                return;
+            }
+
+            const dateParts = dateVal.split('-');
             const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
 
-            // Monta a mensagem para o WhatsApp
-            let message = `Olá! Gostaria de confirmar um agendamento na *Paiva's Cortes*:\n\n`;
-            message += `👤 *Nome:* ${name}\n`;
-            message += `📞 *Telefone:* ${phone}\n`;
-            message += `✂️ *Serviço:* ${service}\n`;
-            message += `📅 *Data:* ${formattedDate}\n`;
-            message += `⏰ *Horário:* ${time}\n`;
-            message += `📍 *Local:* ${location}\n`;
+            let msg = `Olá! Gostaria de agendar um horário na *Paiva's Cortes*:\n\n`;
+            msg += `👤 *Nome:* ${nameVal}\n`;
+            msg += `📞 *Telefone:* ${phoneVal}\n`;
+            msg += `✂️ *Serviço:* ${selectedServiceData.name} (${selectedServiceData.price})\n`;
+            msg += `📅 *Data:* ${formattedDate}\n`;
+            msg += `⏰ *Horário:* ${timeVal}\n`;
+            msg += `📍 *Local:* ${locationVal}\n`;
 
-            if (location === 'Na minha casa') {
-                message += `🏠 *Endereço:* ${address}\n`;
+            if (locationVal === 'Na minha casa') {
+                msg += `🏠 *Endereço:* ${addressVal}\n`;
             }
 
-            // Codifica a mensagem para URL
-            const encodedMessage = encodeURIComponent(message);
-            const phoneNumber = '5594991627473';
-
-            // Abre o link do WhatsApp
-            window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
-        });
+            const phoneNum = '5594991627473';
+            window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
     </script>
 </body>
 </html>
