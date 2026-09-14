@@ -1,1180 +1,257 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Paiva's Cortes — Agendamento</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiva's Cortes - Agendamento</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --input-bg: #2a2a2a;
+            --accent-color: #d4af37; /* Dourado Barbearia */
+            --accent-hover: #b5932a;
+            --text-color: #ffffff;
+            --text-secondary: #a0a0a0;
+            --border-color: #333333;
+        }
 
-  :root{
-    --bg:#1B1815;
-    --bg-elev:#232019;
-    --bg-elev-2:#2C271F;
-    --border:rgba(242,237,228,0.13);
-    --border-strong:rgba(242,237,228,0.24);
-    --text:#F2EDE4;
-    --text-muted:#A79C8B;
-    --accent:#6EC3E8;
-    --accent-soft:rgba(110,195,232,0.16);
-    --accent-strong:#9AD8F0;
-    --danger:#D97A6C;
-    --danger-soft:rgba(217,122,108,0.15);
-    --success:#7FBFD8;
-    --success-soft:rgba(127,191,216,0.15);
-    --radius:3px;
-  }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:'Inter',sans-serif;
-    -webkit-font-smoothing:antialiased;
-    min-height:100vh;
-  }
-  ::selection{background:var(--accent-soft);}
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 15px;
+        }
 
-  h1,h2,h3,.display{
-    font-family:'Space Grotesk',sans-serif;
-    font-weight:600;
-    letter-spacing:-0.02em;
-    margin:0;
-  }
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
 
-  button{
-    font-family:'Inter',sans-serif;
-    cursor:pointer;
-    border:none;
-    background:none;
-    color:inherit;
-  }
-  input{
-    font-family:'Inter',sans-serif;
-    color:var(--text);
-  }
-  a{color:inherit;}
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
 
-  .app{
-    max-width:1100px;
-    margin:0 auto;
-    padding:0 24px 80px;
-  }
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
 
-  /* ---------- Header ---------- */
-  .topbar{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:32px 0 28px;
-    border-bottom:1px solid var(--border);
-    margin-bottom:0;
-    flex-wrap:wrap;
-    gap:16px;
-  }
-  .brand{
-    display:flex;
-    align-items:baseline;
-    gap:10px;
-  }
-  .brand-mark{
-    font-family:'Space Grotesk',sans-serif;
-    font-size:26px;
-    font-weight:600;
-    letter-spacing:-0.01em;
-  }
-  .brand-tag{
-    font-size:13px;
-    color:var(--text-muted);
-  }
-  .topbar-right{
-    display:flex;
-    align-items:center;
-    gap:24px;
-    font-size:13px;
-    color:var(--text-muted);
-  }
-  .hours-line{
-    display:flex;
-    flex-direction:column;
-    gap:2px;
-    text-align:right;
-  }
-  .hours-line strong{
-    color:var(--text);
-    font-weight:500;
-  }
-  .link-btn{
-    font-size:13px;
-    color:var(--text-muted);
-    border-bottom:1px solid var(--border-strong);
-    padding-bottom:2px;
-    transition:color .15s;
-  }
-  .link-btn:hover{color:var(--text);}
+        .header p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
 
-  /* ---------- Hero ---------- */
-  .hero{
-    padding:56px 0 48px;
-    display:flex;
-    align-items:flex-end;
-    justify-content:space-between;
-    gap:32px;
-    border-bottom:1px solid var(--border);
-    flex-wrap:wrap;
-  }
-  .hero h1{
-    font-size:clamp(40px,5.6vw,60px);
-    line-height:1.02;
-    max-width:640px;
-    font-weight:700;
-  }
-  .hero p{
-    color:var(--text-muted);
-    font-size:16px;
-    max-width:420px;
-    margin-top:14px;
-    line-height:1.5;
-  }
+        .form-group {
+            margin-bottom: 18px;
+        }
 
-  /* ---------- Layout: booking ---------- */
-  .booking-wrap{
-    display:flex;
-    gap:56px;
-    padding-top:48px;
-    align-items:flex-start;
-    flex-wrap:wrap;
-  }
-  .steps-rail{
-    display:flex;
-    flex-direction:column;
-    gap:0;
-    min-width:180px;
-    flex-shrink:0;
-  }
-  .step-item{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:14px 0;
-    border-bottom:1px solid var(--border);
-    cursor:pointer;
-    opacity:.45;
-    transition:opacity .15s;
-  }
-  .step-item:first-child{border-top:1px solid var(--border);}
-  .step-item.active{opacity:1;}
-  .step-item.done{opacity:.75;cursor:pointer;}
-  .step-item.locked{cursor:default;}
-  .step-num{
-    font-family:'Space Grotesk',sans-serif;
-    font-size:15px;
-    color:var(--accent);
-    width:18px;
-  }
-  .step-label{
-    font-size:14px;
-  }
-  .step-item.active .step-label{font-weight:600;}
-  .step-sub{
-    font-size:12px;
-    color:var(--text-muted);
-    margin-left:auto;
-  }
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-  .step-content{
-    flex:1;
-    min-width:300px;
-    max-width:600px;
-  }
-  .step-heading{
-    font-size:22px;
-    margin-bottom:6px;
-  }
-  .step-desc{
-    color:var(--text-muted);
-    font-size:14px;
-    margin-bottom:28px;
-  }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
 
-  /* ---------- Services ---------- */
-  .service-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:18px 4px;
-    border-bottom:1px solid var(--border);
-    cursor:pointer;
-    transition:background .12s;
-  }
-  .service-row:first-child{border-top:1px solid var(--border);}
-  .service-row:hover{background:var(--bg-elev);}
-  .service-row.selected{background:var(--accent-soft);}
-  .service-name{font-size:16px;font-weight:500;}
-  .service-meta{font-size:12.5px;color:var(--text-muted);margin-top:3px;}
-  .service-price{
-    font-family:'Space Grotesk',sans-serif;
-    font-size:17px;
-    color:var(--accent-strong);
-    white-space:nowrap;
-    margin-left:16px;
-  }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+        }
 
-  /* ---------- Calendar ---------- */
-  .cal-head{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:18px;
-  }
-  .cal-month{
-    font-family:'Space Grotesk',sans-serif;
-    font-size:17px;
-    text-transform:capitalize;
-  }
-  .cal-nav{
-    display:flex;
-    gap:6px;
-  }
-  .cal-nav button{
-    width:30px;height:30px;
-    border:1px solid var(--border-strong);
-    border-radius:50%;
-    display:flex;align-items:center;justify-content:center;
-    color:var(--text-muted);
-    transition:all .12s;
-  }
-  .cal-nav button:hover:not(:disabled){color:var(--text);border-color:var(--text-muted);}
-  .cal-nav button:disabled{opacity:.25;cursor:default;}
-  .cal-grid{
-    display:grid;
-    grid-template-columns:repeat(7,1fr);
-    gap:4px;
-  }
-  .cal-dow{
-    text-align:center;
-    font-size:11px;
-    color:var(--text-muted);
-    padding-bottom:8px;
-  }
-  .cal-day{
-    aspect-ratio:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:14px;
-    border-radius:50%;
-    color:var(--text);
-    position:relative;
-    transition:background .12s;
-  }
-  .cal-day.empty{visibility:hidden;}
-  .cal-day.disabled{color:var(--text-muted);opacity:.3;cursor:default;}
-  .cal-day.enabled{cursor:pointer;}
-  .cal-day.enabled:hover{background:var(--bg-elev-2);}
-  .cal-day.today::after{
-    content:'';
-    position:absolute;
-    bottom:5px;
-    width:4px;height:4px;
-    border-radius:50%;
-    background:var(--accent);
-  }
-  .cal-day.selected{
-    background:var(--accent);
-    color:#1B1815;
-    font-weight:600;
-  }
-  .cal-day.selected::after{display:none;}
-  .cal-legend{
-    display:flex;gap:18px;margin-top:18px;font-size:12px;color:var(--text-muted);
-  }
+        .row {
+            display: flex;
+            gap: 12px;
+        }
 
-  /* ---------- Time slots ---------- */
-  .slots-grid{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-  }
-  .slot-chip{
-    padding:10px 16px;
-    border:1px solid var(--border-strong);
-    border-radius:20px;
-    font-size:14px;
-    transition:all .12s;
-  }
-  .slot-chip:hover{border-color:var(--accent);}
-  .slot-chip.selected{
-    background:var(--accent);
-    border-color:var(--accent);
-    color:#1B1815;
-    font-weight:600;
-  }
-  .slot-chip.taken{
-    color:var(--text-muted);
-    opacity:.35;
-    text-decoration:line-through;
-    cursor:default;
-    border-color:var(--border);
-  }
-  .empty-note{
-    color:var(--text-muted);
-    font-size:14px;
-    padding:20px 0;
-  }
+        .row .form-group {
+            flex: 1;
+        }
 
-  /* ---------- Form ---------- */
-  .field{
-    margin-bottom:18px;
-  }
-  .field label{
-    display:block;
-    font-size:12.5px;
-    color:var(--text-muted);
-    margin-bottom:7px;
-  }
-  .field input{
-    width:100%;
-    background:var(--bg-elev);
-    border:1px solid var(--border-strong);
-    border-radius:var(--radius);
-    padding:12px 14px;
-    font-size:15px;
-    outline:none;
-    transition:border-color .12s;
-  }
-  .field input:focus{border-color:var(--accent);}
+        #addressGroup {
+            display: none;
+        }
 
-  .loc-options{
-    display:flex;
-    gap:10px;
-    margin-bottom:18px;
-  }
-  .loc-option{
-    flex:1;
-    padding:14px 12px;
-    border:1px solid var(--border-strong);
-    border-radius:var(--radius);
-    text-align:center;
-    font-size:14px;
-    transition:all .12s;
-  }
-  .loc-option:hover{border-color:var(--accent);}
-  .loc-option.selected{
-    border-color:var(--accent);
-    background:var(--accent-soft);
-    font-weight:600;
-  }
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--accent-color);
+            color: #121212;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            margin-top: 10px;
+        }
 
-  .summary-box{
-    background:var(--bg-elev);
-    border:1px solid var(--border);
-    border-radius:var(--radius);
-    padding:18px 20px;
-    margin-bottom:24px;
-    font-size:14px;
-  }
-  .summary-row{
-    display:flex;justify-content:space-between;
-    padding:5px 0;
-    color:var(--text-muted);
-  }
-  .summary-row strong{color:var(--text);font-weight:500;}
+        .btn-submit:hover {
+            background-color: var(--accent-hover);
+        }
 
-  .btn-primary{
-    background:var(--accent);
-    color:#141210;
-    padding:14px 28px;
-    border-radius:24px;
-    font-size:14.5px;
-    font-weight:600;
-    letter-spacing:-0.01em;
-    transition:transform .15s, background .15s;
-  }
-  .btn-primary:hover:not(:disabled){background:var(--accent-strong); transform:translateY(-1px);}
-  .btn-primary:active:not(:disabled){transform:translateY(0);}
-  .btn-primary:disabled{opacity:.35;cursor:default;}
-  .btn-ghost{
-    padding:14px 24px;
-    color:var(--text-muted);
-    font-size:14.5px;
-    border:1px solid var(--border-strong);
-    border-radius:24px;
-    transition:all .15s;
-  }
-  .btn-ghost:hover{color:var(--text);border-color:var(--text-muted);}
-  .btn-row{display:flex;gap:12px;margin-top:8px;}
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
 
-  .error-msg{
-    color:var(--danger);
-    background:var(--danger-soft);
-    border-radius:var(--radius);
-    padding:10px 14px;
-    font-size:13.5px;
-    margin-bottom:16px;
-  }
-
-  /* ---------- Confirmation ---------- */
-  .confirm-wrap{
-    padding-top:48px;
-    max-width:480px;
-  }
-  .confirm-mark{
-    width:44px;height:44px;
-    border-radius:50%;
-    background:var(--success-soft);
-    color:var(--success);
-    display:flex;align-items:center;justify-content:center;
-    margin-bottom:22px;
-  }
-  .confirm-wrap h2{font-size:26px;margin-bottom:10px;}
-  .confirm-wrap>p{color:var(--text-muted);font-size:14.5px;margin-bottom:28px;}
-
-  /* ---------- Admin ---------- */
-  .pin-wrap{
-    max-width:340px;
-    margin:80px auto;
-    text-align:center;
-  }
-  .pin-wrap h2{font-size:22px;margin-bottom:8px;}
-  .pin-wrap p{color:var(--text-muted);font-size:13.5px;margin-bottom:24px;}
-  .pin-wrap input{
-    text-align:center;
-    letter-spacing:6px;
-    font-size:20px;
-    width:100%;
-    background:var(--bg-elev);
-    border:1px solid var(--border-strong);
-    border-radius:var(--radius);
-    padding:14px;
-    margin-bottom:16px;
-    outline:none;
-  }
-  .pin-wrap input:focus{border-color:var(--accent);}
-
-  .admin-head{
-    display:flex;justify-content:space-between;align-items:center;
-    padding:32px 0 24px;
-    border-bottom:1px solid var(--border);
-    flex-wrap:wrap;gap:12px;
-  }
-  .admin-body{
-    display:flex;gap:48px;padding-top:36px;align-items:flex-start;flex-wrap:wrap;
-  }
-  .admin-main{flex:2;min-width:320px;}
-  .admin-side{flex:1;min-width:260px;}
-  .date-group{margin-bottom:32px;}
-  .date-group-title{
-    font-family:'Space Grotesk',sans-serif;
-    font-size:16px;
-    text-transform:capitalize;
-    margin-bottom:12px;
-    color:var(--accent-strong);
-  }
-  .appt-row{
-    display:flex;
-    align-items:center;
-    gap:16px;
-    padding:14px 0;
-    border-bottom:1px solid var(--border);
-  }
-  .appt-time{
-    font-family:'Space Grotesk',sans-serif;
-    font-size:16px;
-    width:56px;
-    flex-shrink:0;
-  }
-  .appt-info{flex:1;min-width:0;}
-  .appt-name{font-size:14.5px;font-weight:500;}
-  .appt-meta{font-size:12.5px;color:var(--text-muted);margin-top:2px;}
-  .appt-cancel{
-    font-size:12.5px;
-    color:var(--danger);
-    border:1px solid transparent;
-    padding:6px 10px;
-    border-radius:var(--radius);
-    flex-shrink:0;
-  }
-  .appt-cancel:hover{border-color:var(--danger);}
-  .side-title{
-    font-size:13px;
-    color:var(--text-muted);
-    margin-bottom:14px;
-  }
-  .block-row{
-    display:flex;justify-content:space-between;align-items:center;
-    padding:10px 0;border-bottom:1px solid var(--border);
-    font-size:13.5px;
-  }
-  .add-block{display:flex;gap:8px;margin-top:16px;}
-  .add-block input{
-    flex:1;background:var(--bg-elev);border:1px solid var(--border-strong);
-    border-radius:var(--radius);padding:9px 10px;font-size:13px;outline:none;
-  }
-  .add-block button{
-    background:var(--bg-elev-2);border:1px solid var(--border-strong);
-    border-radius:var(--radius);padding:9px 14px;font-size:13px;color:var(--text-muted);
-  }
-  .add-block button:hover{color:var(--text);}
-  .empty-admin{color:var(--text-muted);font-size:14px;padding:12px 0;}
-
-  .footer-note{
-    text-align:center;color:var(--text-muted);font-size:12px;padding:40px 0 0;
-  }
-
-  .razor-mark{
-    width:120px;
-    height:120px;
-    flex-shrink:0;
-    opacity:.9;
-  }
-
-  @media (max-width:640px){
-    .app{padding:0 16px 60px;}
-    .topbar{padding:22px 0 20px;}
-    .topbar-right{width:100%;justify-content:space-between;}
-    .hero{padding:32px 0 28px;gap:20px;}
-    .razor-mark{width:72px;height:72px;}
-    .booking-wrap{flex-direction:column;gap:20px;padding-top:32px;}
-    .steps-rail{width:100%;}
-    .step-content{max-width:100%;}
-  }
-
-</style>
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+    </style>
 </head>
 <body>
-<div id="root" class="app"></div>
 
-<script>
-/* =====================================================================
-   CONFIGURAÇÕES — edite aqui os dados da sua barbearia
-   ===================================================================== */
-const SHOP = {
-  name: "Paiva's Cortes",
-  tagline: "Barbearia",
-  hoursText: "Ter–Sáb, 9h–19h",
-};
-const CLOSED_WEEKDAYS = [0, 1]; // 0=Domingo, 1=Segunda
-const OPEN_MINUTES = 9 * 60;     // 9:00
-const CLOSE_MINUTES = 19 * 60;   // 19:00
-const LUNCH_START = 12 * 60;     // 12:00
-const LUNCH_END = 13 * 60;       // 13:00
-const SLOT_STEP = 30;            // intervalo entre horários, em minutos
-const ADMIN_PIN = "sb1809";      // troque por uma senha sua
-
-const SERVICES = [
-  { id: "corte", name: "Corte", duration: 40, price: 40 },
-  { id: "barba", name: "Barba", duration: 25, price: 30 },
-  { id: "corte-barba", name: "Corte + Barba", duration: 60, price: 65 },
-  { id: "sobrancelha", name: "Sobrancelha", duration: 15, price: 15 },
-];
-/* ===================================================================== */
-
-const DOW = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
-const MONTHS = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
-
-function pad(n){ return n < 10 ? "0"+n : ""+n; }
-function dateKey(d){ return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
-function minutesToHHMM(m){ return pad(Math.floor(m/60))+":"+pad(m%60); }
-function fmtMoney(v){ return "R$ " + v.toFixed(2).replace(".", ","); }
-function fmtDateLong(dstr){
-  const [y,m,d] = dstr.split("-").map(Number);
-  const dt = new Date(y, m-1, d);
-  return dt.toLocaleDateString("pt-BR", { weekday:'long', day:'numeric', month:'long' });
-}
-function todayKey(){ return dateKey(new Date()); }
-
-/* ---------- storage helpers ---------- */
-async function loadBookings(){
-  try{
-    const r = await window.storage.get('bookings', true);
-    return r ? JSON.parse(r.value) : [];
-  }catch(e){ return []; }
-}
-async function saveBookings(list){
-  try{ await window.storage.set('bookings', JSON.stringify(list), true); return true; }
-  catch(e){ return false; }
-}
-async function loadBlocked(){
-  try{
-    const r = await window.storage.get('blockedDates', true);
-    return r ? JSON.parse(r.value) : [];
-  }catch(e){ return []; }
-}
-async function saveBlocked(list){
-  try{ await window.storage.set('blockedDates', JSON.stringify(list), true); return true; }
-  catch(e){ return false; }
-}
-
-/* ---------- state ---------- */
-const state = {
-  route: 'client',        // 'client' | 'admin'
-  adminAuthed: false,
-  pinInput: '',
-  pinError: '',
-
-  step: 1,                 // 1 service, 2 date, 3 time, 4 info, 5 done
-  service: null,
-  calMonth: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-  selectedDate: null,      // 'YYYY-MM-DD'
-  selectedTime: null,      // 'HH:MM'
-  clientName: '',
-  clientPhone: '',
-  locationType: 'shop',   // 'shop' | 'home'
-  address: '',
-  submitting: false,
-  formError: '',
-  lastBooking: null,
-
-  bookings: [],
-  blocked: [],
-  loading: true,
-  newBlockDate: '',
-};
-
-const root = document.getElementById('root');
-function render(){ root.innerHTML = ''; root.appendChild(buildApp()); }
-
-async function init(){
-  state.bookings = await loadBookings();
-  state.blocked = await loadBlocked();
-  state.loading = false;
-  render();
-}
-
-/* ---------- slot logic ---------- */
-function isClosedDate(dstr){
-  const [y,m,d] = dstr.split("-").map(Number);
-  const dt = new Date(y, m-1, d);
-  if (dt < new Date(new Date().setHours(0,0,0,0))) return true;
-  if (CLOSED_WEEKDAYS.includes(dt.getDay())) return true;
-  if (state.blocked.includes(dstr)) return true;
-  return false;
-}
-
-function getAvailableSlots(dstr, duration){
-  const dayBookings = state.bookings.filter(b => b.date === dstr);
-  const nowMinutes = (dstr === todayKey())
-    ? (new Date().getHours()*60 + new Date().getMinutes())
-    : -1;
-
-  const slots = [];
-  for (let t = OPEN_MINUTES; t + duration <= CLOSE_MINUTES; t += SLOT_STEP){
-    const end = t + duration;
-    if (t < LUNCH_END && end > LUNCH_START) continue; // cruza horário de almoço
-    if (nowMinutes >= 0 && t <= nowMinutes + 15) continue; // já passou (com folga de 15min)
-
-    const conflict = dayBookings.some(b => {
-      const bStart = b.startMin;
-      const bEnd = b.startMin + b.duration;
-      return t < bEnd && end > bStart;
-    });
-    slots.push({ time: minutesToHHMM(t), startMin: t, taken: conflict });
-  }
-  return slots;
-}
-
-/* ---------- render: shell ---------- */
-function buildApp(){
-  const wrap = document.createElement('div');
-  if (state.loading){
-    wrap.innerHTML = '<div style="padding:120px 0;text-align:center;color:var(--text-muted);font-size:14px;">Carregando…</div>';
-    return wrap;
-  }
-  wrap.appendChild(buildTopbar());
-  if (state.route === 'client'){
-    wrap.appendChild(buildHero());
-    wrap.appendChild(buildBooking());
-  } else {
-    wrap.appendChild(buildAdmin());
-  }
-  wrap.appendChild(buildFooter());
-  return wrap;
-}
-
-function buildTopbar(){
-  const bar = el('div','topbar');
-  const brand = el('div','brand');
-  brand.innerHTML = `<span class="brand-mark">${SHOP.name}</span><span class="brand-tag">${SHOP.tagline}</span>`;
-  bar.appendChild(brand);
-
-  const right = el('div','topbar-right');
-  if (state.route === 'client'){
-    const hours = el('div','hours-line');
-    hours.innerHTML = `<strong>${SHOP.hoursText}</strong><span>Fechado dom. e seg.</span>`;
-    right.appendChild(hours);
-    right.appendChild(linkBtn('Painel do barbeiro', () => { state.route='admin'; render(); }));
-  } else {
-    right.appendChild(linkBtn('← Voltar ao site', () => { state.route='client'; state.adminAuthed=false; state.pinInput=''; render(); }));
-  }
-  bar.appendChild(right);
-  return bar;
-}
-
-function linkBtn(txt, onClick){
-  const b = el('button','link-btn');
-  b.textContent = txt;
-  b.onclick = onClick;
-  return b;
-}
-
-function buildFooter(){
-  const f = el('div','footer-note');
-  f.textContent = `${SHOP.name} — agendamentos online`;
-  return f;
-}
-
-/* ---------- hero ---------- */
-function buildHero(){
-  const hero = el('div','hero');
-  const left = el('div');
-  left.innerHTML = `<h1>Reserve<br>seu horário.</h1><p>Escolha o serviço, o dia e o horário. Confirmação na hora, sem complicação.</p>`;
-  hero.appendChild(left);
-  const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-  svg.setAttribute('class','razor-mark');
-  svg.setAttribute('viewBox','0 0 100 100');
-  svg.innerHTML = `
-    <g fill="none" stroke="var(--accent)" stroke-width="1.4">
-      <path d="M20 60 L62 18" />
-      <path d="M62 18 C 70 10, 84 12, 88 20 C 80 22, 70 26, 62 34" />
-      <circle cx="20" cy="60" r="9" />
-      <circle cx="20" cy="60" r="2.4" fill="var(--accent)" stroke="none"/>
-      <path d="M40 40 L52 52" />
-    </g>`;
-  hero.appendChild(svg);
-  return hero;
-}
-
-/* ---------- booking flow ---------- */
-function buildBooking(){
-  if (state.step === 5) return buildConfirmation();
-
-  const wrap = el('div','booking-wrap');
-  wrap.appendChild(buildStepsRail());
-  const content = el('div','step-content');
-  if (state.step === 1) content.appendChild(buildStepService());
-  if (state.step === 2) content.appendChild(buildStepDate());
-  if (state.step === 3) content.appendChild(buildStepTime());
-  if (state.step === 4) content.appendChild(buildStepInfo());
-  wrap.appendChild(content);
-  return wrap;
-}
-
-function buildStepsRail(){
-  const rail = el('div','steps-rail');
-  const defs = [
-    {n:1, label:'Serviço', sub: state.service ? state.service.name : ''},
-    {n:2, label:'Data', sub: state.selectedDate ? fmtDateLong(state.selectedDate).split(',')[0] : ''},
-    {n:3, label:'Horário', sub: state.selectedTime || ''},
-    {n:4, label:'Seus dados', sub: state.clientName || ''},
-  ];
-  defs.forEach(d => {
-    const reachable = d.n === 1 || (d.n <= state.step) || (d.n === state.step+0);
-    const canJump = d.n < state.step || (d.n === state.step);
-    const item = el('div','step-item' + (d.n===state.step?' active':'') + (d.n<state.step?' done':'') + (!canJump && d.n>state.step ? ' locked':''));
-    item.innerHTML = `<span class="step-num">0${d.n}</span><span class="step-label">${d.label}</span><span class="step-sub">${d.sub}</span>`;
-    if (canJump){
-      item.onclick = () => { state.step = d.n; render(); };
-    }
-    rail.appendChild(item);
-  });
-  return rail;
-}
-
-function buildStepService(){
-  const c = document.createDocumentFragment();
-  const wrap = el('div');
-  wrap.innerHTML = `<div class="step-heading">Escolha o serviço</div><div class="step-desc">Selecione o que você quer fazer hoje.</div>`;
-  SERVICES.forEach(s => {
-    const row = el('div','service-row' + (state.service && state.service.id===s.id ? ' selected':''));
-    row.innerHTML = `<div><div class="service-name">${s.name}</div><div class="service-meta">${s.duration} min</div></div><div class="service-price">${fmtMoney(s.price)}</div>`;
-    row.onclick = () => {
-      state.service = s;
-      state.selectedTime = null;
-      state.step = 2;
-      render();
-    };
-    wrap.appendChild(row);
-  });
-  c.appendChild(wrap);
-  return c;
-}
-
-function buildStepDate(){
-  const wrap = el('div');
-  wrap.innerHTML = `<div class="step-heading">Escolha a data</div><div class="step-desc">Dias fechados aparecem apagados.</div>`;
-
-  const calHead = el('div','cal-head');
-  const monthLabel = el('div','cal-month');
-  monthLabel.textContent = `${MONTHS[state.calMonth.getMonth()]} de ${state.calMonth.getFullYear()}`;
-  const nav = el('div','cal-nav');
-  const prevBtn = el('button'); prevBtn.innerHTML = '‹';
-  const nextBtn = el('button'); nextBtn.innerHTML = '›';
-  const firstOfThisMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-  if (state.calMonth <= firstOfThisMonth) prevBtn.disabled = true;
-  prevBtn.onclick = () => { state.calMonth = new Date(state.calMonth.getFullYear(), state.calMonth.getMonth()-1, 1); render(); };
-  nextBtn.onclick = () => { state.calMonth = new Date(state.calMonth.getFullYear(), state.calMonth.getMonth()+1, 1); render(); };
-  nav.appendChild(prevBtn); nav.appendChild(nextBtn);
-  calHead.appendChild(monthLabel); calHead.appendChild(nav);
-  wrap.appendChild(calHead);
-
-  const grid = el('div','cal-grid');
-  DOW.forEach(d => { const c = el('div','cal-dow'); c.textContent = d; grid.appendChild(c); });
-
-  const year = state.calMonth.getFullYear(), month = state.calMonth.getMonth();
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month+1, 0).getDate();
-
-  for (let i=0;i<firstDay;i++){ grid.appendChild(el('div','cal-day empty')); }
-  for (let d=1; d<=daysInMonth; d++){
-    const dt = new Date(year, month, d);
-    const dstr = dateKey(dt);
-    const closed = isClosedDate(dstr);
-    const cell = el('div','cal-day ' + (closed ? 'disabled' : 'enabled') + (dstr===todayKey() ? ' today':'') + (state.selectedDate===dstr ? ' selected':''));
-    cell.textContent = d;
-    if (!closed){
-      cell.onclick = () => { state.selectedDate = dstr; state.selectedTime = null; state.step = 3; render(); };
-    }
-    grid.appendChild(cell);
-  }
-  wrap.appendChild(grid);
-
-  const legend = el('div','cal-legend');
-  legend.innerHTML = `<span>● hoje</span><span style="opacity:.4">apagado — fechado</span>`;
-  wrap.appendChild(legend);
-  return wrap;
-}
-
-function buildStepTime(){
-  const wrap = el('div');
-  wrap.innerHTML = `<div class="step-heading">Escolha o horário</div><div class="step-desc">${fmtDateLong(state.selectedDate)} · ${state.service.name} (${state.service.duration} min)</div>`;
-
-  const slots = getAvailableSlots(state.selectedDate, state.service.duration);
-  if (slots.length === 0){
-    const note = el('div','empty-note');
-    note.textContent = 'Não há horários livres nesse dia. Escolha outra data.';
-    wrap.appendChild(note);
-  } else {
-    const grid = el('div','slots-grid');
-    slots.forEach(s => {
-      const chip = el('button','slot-chip' + (s.taken ? ' taken' : '') + (state.selectedTime===s.time ? ' selected':''));
-      chip.textContent = s.time;
-      if (!s.taken){
-        chip.onclick = () => { state.selectedTime = s.time; state.step = 4; render(); };
-      }
-      grid.appendChild(chip);
-    });
-    wrap.appendChild(grid);
-  }
-  return wrap;
-}
-
-function buildStepInfo(){
-  const wrap = el('div');
-  wrap.innerHTML = `<div class="step-heading">Seus dados</div><div class="step-desc">Só precisamos do seu nome e telefone para confirmar.</div>`;
-
-  const summary = el('div','summary-box');
-  summary.innerHTML = `
-    <div class="summary-row"><span>Serviço</span><strong>${state.service.name}</strong></div>
-    <div class="summary-row"><span>Data</span><strong>${fmtDateLong(state.selectedDate)}</strong></div>
-    <div class="summary-row"><span>Horário</span><strong>${state.selectedTime}</strong></div>
-    <div class="summary-row"><span>Valor</span><strong>${fmtMoney(state.service.price)}</strong></div>
-  `;
-  wrap.appendChild(summary);
-
-  if (state.formError){
-    const err = el('div','error-msg');
-    err.textContent = state.formError;
-    wrap.appendChild(err);
-  }
-
-  const locLabel = el('div','field');
-  locLabel.innerHTML = `<label>Onde vai ser o atendimento</label>`;
-  wrap.appendChild(locLabel);
-  const locOptions = el('div','loc-options');
-  const shopOpt = el('button','loc-option' + (state.locationType==='shop' ? ' selected':''));
-  shopOpt.textContent = 'Na barbearia';
-  shopOpt.onclick = () => { state.locationType = 'shop'; render(); };
-  const homeOpt = el('button','loc-option' + (state.locationType==='home' ? ' selected':''));
-  homeOpt.textContent = 'Na minha casa';
-  homeOpt.onclick = () => { state.locationType = 'home'; render(); };
-  locOptions.appendChild(shopOpt); locOptions.appendChild(homeOpt);
-  wrap.appendChild(locOptions);
-
-  if (state.locationType === 'home'){
-    const addrField = el('div','field');
-    addrField.innerHTML = `<label>Endereço completo</label>`;
-    const addrInput = document.createElement('input');
-    addrInput.type = 'text'; addrInput.placeholder = 'Rua, número, bairro, complemento';
-    addrInput.value = state.address;
-    addrInput.oninput = (e) => state.address = e.target.value;
-    addrField.appendChild(addrInput);
-    wrap.appendChild(addrField);
-  }
-
-  const nameField = el('div','field');
-  nameField.innerHTML = `<label>Nome completo</label>`;
-  const nameInput = document.createElement('input');
-  nameInput.type = 'text'; nameInput.placeholder = 'Como podemos te chamar';
-  nameInput.value = state.clientName;
-  nameInput.oninput = (e) => state.clientName = e.target.value;
-  nameField.appendChild(nameInput);
-  wrap.appendChild(nameField);
-
-  const phoneField = el('div','field');
-  phoneField.innerHTML = `<label>Telefone / WhatsApp</label>`;
-  const phoneInput = document.createElement('input');
-  phoneInput.type = 'tel'; phoneInput.placeholder = '(00) 00000-0000';
-  phoneInput.value = state.clientPhone;
-  phoneInput.oninput = (e) => state.clientPhone = e.target.value;
-  phoneField.appendChild(phoneInput);
-  wrap.appendChild(phoneField);
-
-  const btnRow = el('div','btn-row');
-  const back = el('button','btn-ghost'); back.textContent = 'Voltar';
-  back.onclick = () => { state.step = 3; render(); };
-  const confirm = el('button','btn-primary');
-  confirm.textContent = state.submitting ? 'Confirmando…' : 'Confirmar agendamento';
-  confirm.disabled = state.submitting;
-  confirm.onclick = handleConfirm;
-  btnRow.appendChild(back); btnRow.appendChild(confirm);
-  wrap.appendChild(btnRow);
-
-  return wrap;
-}
-
-async function handleConfirm(){
-  state.formError = '';
-  if (!state.clientName.trim() || !state.clientPhone.trim()){
-    state.formError = 'Preencha nome e telefone para continuar.';
-    render();
-    return;
-  }
-  if (state.locationType === 'home' && !state.address.trim()){
-    state.formError = 'Informe o endereço para o atendimento em domicílio.';
-    render();
-    return;
-  }
-  state.submitting = true;
-  render();
-
-  // recarrega os agendamentos mais recentes para evitar conflito com outro cliente
-  const fresh = await loadBookings();
-  state.bookings = fresh;
-  const duration = state.service.duration;
-  const startMin = parseInt(state.selectedTime.split(':')[0])*60 + parseInt(state.selectedTime.split(':')[1]);
-  const endMin = startMin + duration;
-
-  const conflict = fresh.some(b => b.date === state.selectedDate && startMin < (b.startMin + b.duration) && endMin > b.startMin);
-  if (conflict){
-    state.submitting = false;
-    state.formError = 'Esse horário acabou de ser reservado por outra pessoa. Escolha outro.';
-    state.step = 3;
-    render();
-    return;
-  }
-
-  const booking = {
-    id: Date.now().toString(36) + Math.random().toString(36).slice(2,7),
-    date: state.selectedDate,
-    startMin,
-    duration,
-    time: state.selectedTime,
-    service: state.service.name,
-    price: state.service.price,
-    name: state.clientName.trim(),
-    phone: state.clientPhone.trim(),
-    locationType: state.locationType,
-    address: state.locationType === 'home' ? state.address.trim() : '',
-    createdAt: new Date().toISOString(),
-  };
-  fresh.push(booking);
-  const ok = await saveBookings(fresh);
-  state.bookings = fresh;
-  state.submitting = false;
-
-  if (!ok){
-    state.formError = 'Não foi possível salvar. Tente novamente.';
-    render();
-    return;
-  }
-  state.lastBooking = booking;
-  state.step = 5;
-  render();
-}
-
-function buildConfirmation(){
-  const wrap = el('div','confirm-wrap');
-  const mark = el('div','confirm-mark');
-  mark.innerHTML = '✓';
-  wrap.appendChild(mark);
-  wrap.innerHTML += `<h2>Agendamento confirmado</h2><p>Te esperamos! Se precisar remarcar, é só entrar em contato com a barbearia.</p>`;
-
-  const b = state.lastBooking;
-  const summary = el('div','summary-box');
-  summary.innerHTML = `
-    <div class="summary-row"><span>Nome</span><strong>${b.name}</strong></div>
-    <div class="summary-row"><span>Serviço</span><strong>${b.service}</strong></div>
-    <div class="summary-row"><span>Data</span><strong>${fmtDateLong(b.date)}</strong></div>
-    <div class="summary-row"><span>Horário</span><strong>${b.time}</strong></div>
-    <div class="summary-row"><span>Local</span><strong>${b.locationType==='home' ? 'No seu endereço' : 'Na barbearia'}</strong></div>
-    ${b.locationType==='home' ? `<div class="summary-row"><span>Endereço</span><strong>${b.address}</strong></div>` : ''}
-    <div class="summary-row"><span>Valor</span><strong>${fmtMoney(b.price)}</strong></div>
-  `;
-  wrap.appendChild(summary);
-
-  const again = el('button','btn-primary');
-  again.textContent = 'Marcar outro horário';
-  again.onclick = () => {
-    state.step = 1; state.service = null; state.selectedDate = null;
-    state.selectedTime = null; state.clientName=''; state.clientPhone='';
-    state.locationType = 'shop'; state.address = '';
-    state.lastBooking = null;
-    render();
-  };
-  wrap.appendChild(again);
-  return wrap;
-}
-
-/* ---------- admin ---------- */
-function buildAdmin(){
-  if (!state.adminAuthed){
-    const wrap = el('div','pin-wrap');
-    wrap.innerHTML = `<h2>Painel do barbeiro</h2><p>Digite a senha para acessar os agendamentos.</p>`;
-    const input = document.createElement('input');
-    input.type = 'password'; input.maxLength = 8; input.value = state.pinInput;
-    input.oninput = (e) => state.pinInput = e.target.value;
-    input.onkeydown = (e) => { if (e.key==='Enter') submitPin(); };
-    wrap.appendChild(input);
-    if (state.pinError){
-      const err = el('div','error-msg'); err.textContent = state.pinError; wrap.appendChild(err);
-    }
-    const btn = el('button','btn-primary'); btn.style.width='100%'; btn.textContent='Entrar';
-    btn.onclick = submitPin;
-    wrap.appendChild(btn);
-    return wrap;
-  }
-
-  const wrap = el('div');
-  const head = el('div','admin-head');
-  head.innerHTML = `<h2 class="display" style="font-size:24px;">Agendamentos</h2>`;
-  wrap.appendChild(head);
-
-  const body = el('div','admin-body');
-  const main = el('div','admin-main');
-
-  const upcoming = state.bookings
-    .filter(b => b.date >= todayKey())
-    .sort((a,b) => a.date === b.date ? a.startMin - b.startMin : a.date.localeCompare(b.date));
-
-  if (upcoming.length === 0){
-    const e2 = el('div','empty-admin'); e2.textContent = 'Nenhum agendamento futuro ainda.';
-    main.appendChild(e2);
-  } else {
-    const groups = {};
-    upcoming.forEach(b => { (groups[b.date] = groups[b.date] || []).push(b); });
-    Object.keys(groups).sort().forEach(dstr => {
-      const grp = el('div','date-group');
-      const title = el('div','date-group-title'); title.textContent = fmtDateLong(dstr);
-      grp.appendChild(title);
-      groups[dstr].forEach(b => {
-        const row = el('div','appt-row');
-        row.innerHTML = `
-          <div class="appt-time">${b.time}</div>
-          <div class="appt-info">
-            <div class="appt-name">${b.name}</div>
-            <div class="appt-meta">${b.service} · ${b.phone} · ${b.locationType==='home' ? 'Domicílio' : 'Na barbearia'}</div>
-            ${b.locationType==='home' ? `<div class="appt-meta">${b.address}</div>` : ''}
-          </div>
-        `;
-        const cancel = el('button','appt-cancel'); cancel.textContent = 'Cancelar';
-        cancel.onclick = () => cancelBooking(b.id);
-        row.appendChild(cancel);
-        grp.appendChild(row);
-      });
-      main.appendChild(grp);
-    });
-  }
-  body.appendChild(main);
-
-  const side = el('div','admin-side');
-  const sideTitle = el('div','side-title'); sideTitle.textContent = 'Dias de folga / fechado';
-  side.appendChild(sideTitle);
-
-  const blockedSorted = [...state.blocked].sort();
-  if (blockedSorted.length === 0){
-    const e3 = el('div','empty-admin'); e3.textContent = 'Nenhum dia bloqueado.';
-    side.appendChild(e3);
-  } else {
-    blockedSorted.forEach(dstr => {
-      const row = el('div','block-row');
-      row.innerHTML = `<span>${fmtDateLong(dstr)}</span>`;
-      const rm = el('button','appt-cancel'); rm.textContent='Remover';
-      rm.onclick = () => removeBlocked(dstr);
-      row.appendChild(rm);
-      side.appendChild(row);
-    });
-  }
-
-  const addRow = el('div','add-block');
-  const dateInput = document.createElement('input');
-  dateInput.type = 'date';
-  dateInput.value = state.newBlockDate;
-  dateInput.onchange = (e) => state.newBlockDate = e.target.value;
-  const addBtn = document.createElement('button'); addBtn.textContent = 'Bloquear';
-  addBtn.onclick = addBlocked;
-  addRow.appendChild(dateInput); addRow.appendChild(addBtn);
-  side.appendChild(addRow);
-
-  body.appendChild(side);
-  wrap.appendChild(body);
-  return wrap;
-}
-
-function submitPin(){
-  if (state.pinInput === ADMIN_PIN){
-    state.adminAuthed = true; state.pinError=''; state.pinInput='';
-  } else {
-    state.pinError = 'Senha incorreta.';
-  }
-  render();
-}
-
-async function cancelBooking(id){
-  const fresh = await loadBookings();
-  const updated = fresh.filter(b => b.id !== id);
-  await saveBookings(updated);
-  state.bookings = updated;
-  render();
-}
-
-async function addBlocked(){
-  if (!state.newBlockDate) return;
-  const fresh = await loadBlocked();
-  if (!fresh.includes(state.newBlockDate)) fresh.push(state.newBlockDate);
-  await saveBlocked(fresh);
-  state.blocked = fresh;
-  state.newBlockDate = '';
-  render();
-}
-
-async function removeBlocked(dstr){
-  const fresh = await loadBlocked();
-  const updated = fresh.filter(d => d !== dstr);
-  await saveBlocked(updated);
-  state.blocked = updated;
-  render();
-}
-
-/* ---------- utils ---------- */
-function el(tag, cls){
-  const e = document.createElement(tag);
-  if (cls) e.className = cls;
-  return e;
-}
-
-init();
-</script>
+    <div class="container">
+        <div class="header">
+            <h1>Paiva's Cortes</h1>
+            <p>Agende seu horário com praticidade</p>
+        </div>
+
+        <form id="bookingForm">
+            <div class="form-group">
+                <label for="service">Serviço</label>
+                <select id="service" required>
+                    <option value="" disabled selected>Selecione um serviço</option>
+                    <option value="Corte (R$ 35,00)">Corte — R$ 35,00</option>
+                    <option value="Barba (R$ 25,00)">Barba — R$ 25,00</option>
+                    <option value="Corte + Barba (R$ 55,00)">Corte + Barba — R$ 55,00</option>
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label for="date">Data</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="time">Horário</label>
+                    <input type="time" id="time" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Local de Atendimento</label>
+                <select id="location" required>
+                    <option value="Na barbearia" selected>Na barbearia</option>
+                    <option value="Na minha casa">Na minha casa</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="addressGroup">
+                <label for="address">Endereço Completo</label>
+                <textarea id="address" rows="2" placeholder="Rua, número, bairro e ponto de referência"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Nome Completo</label>
+                <input type="text" id="name" placeholder="Digite seu nome" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Telefone / WhatsApp</label>
+                <input type="tel" id="phone" placeholder="(94) 99999-9999" required>
+            </div>
+
+            <button type="submit" class="btn-submit">Confirmar Agendamento</button>
+        </form>
+
+        <footer>
+            &copy; Paiva's Cortes. Todos os direitos reservados.
+        </footer>
+    </div>
+
+    <script>
+        const locationSelect = document.getElementById('location');
+        const addressGroup = document.getElementById('addressGroup');
+        const addressInput = document.getElementById('address');
+        const bookingForm = document.getElementById('bookingForm');
+
+        // Alternar exibição do campo de endereço com base no local escolhido
+        locationSelect.addEventListener('change', function () {
+            if (this.value === 'Na minha casa') {
+                addressGroup.style.display = 'block';
+                addressInput.setAttribute('required', 'true');
+            } else {
+                addressGroup.style.display = 'none';
+                addressInput.removeAttribute('required');
+                addressInput.value = '';
+            }
+        });
+
+        // Formatação do envio do formulário para o WhatsApp
+        bookingForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const service = document.getElementById('service').value;
+            const dateRaw = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const location = document.getElementById('location').value;
+            const address = document.getElementById('address').value;
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+
+            // Formata a data para o padrão DD/MM/AAAA
+            const dateParts = dateRaw.split('-');
+            const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+
+            // Monta a mensagem para o WhatsApp
+            let message = `Olá! Gostaria de confirmar um agendamento na *Paiva's Cortes*:\n\n`;
+            message += `👤 *Nome:* ${name}\n`;
+            message += `📞 *Telefone:* ${phone}\n`;
+            message += `✂️ *Serviço:* ${service}\n`;
+            message += `📅 *Data:* ${formattedDate}\n`;
+            message += `⏰ *Horário:* ${time}\n`;
+            message += `📍 *Local:* ${location}\n`;
+
+            if (location === 'Na minha casa') {
+                message += `🏠 *Endereço:* ${address}\n`;
+            }
+
+            // Codifica a mensagem para URL
+            const encodedMessage = encodeURIComponent(message);
+            const phoneNumber = '5594991627473';
+
+            // Abre o link do WhatsApp
+            window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+        });
+    </script>
 </body>
 </html>
