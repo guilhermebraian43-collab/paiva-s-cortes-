@@ -13,6 +13,7 @@
             --accent-color: #6bbce8;
             --border-color: #2a2723;
             --hover-bg: #26231f;
+            --disabled-color: #3a3632;
         }
 
         * {
@@ -65,12 +66,7 @@
             text-align: right;
             font-size: 0.85rem;
             color: var(--text-muted);
-        }
-
-        .header-info a {
-            color: var(--text-color);
-            text-decoration: underline;
-            margin-left: 15px;
+            line-height: 1.4;
         }
 
         /* Banner Hero */
@@ -207,6 +203,45 @@
             color: var(--accent-color);
         }
 
+        /* Grade de Horários */
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .time-slot {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 14px 0;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .time-slot:hover:not(.booked) {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .time-slot.selected {
+            background-color: var(--accent-color);
+            color: #12100e;
+            border-color: var(--accent-color);
+        }
+
+        .time-slot.booked {
+            background-color: var(--disabled-color);
+            color: #666;
+            border-color: transparent;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+
         /* Entradas de Formulário */
         .form-group {
             margin-bottom: 20px;
@@ -254,7 +289,6 @@
             opacity: 0.9;
         }
 
-        /* Responsividade para Telas Pequenas */
         @media (max-width: 768px) {
             .content-grid {
                 grid-template-columns: 1fr;
@@ -293,8 +327,9 @@
                 <span>Barbearia</span>
             </div>
             <div class="header-info">
-                <div>Ter–Sáb, 9h–19h</div>
-                <div style="margin-top:2px;">Fechado dom. e seg.</div>
+                <div>Seg–Sex: 14h–21h</div>
+                <div>Sáb: 19h–22h</div>
+                <div>Dom: 09h–18h</div>
             </div>
         </header>
 
@@ -369,7 +404,7 @@
                     </div>
                     <div class="form-group">
                         <label for="dateInput">Data</label>
-                        <input type="date" id="dateInput">
+                        <input type="date" id="dateInput" onchange="renderTimeSlots()">
                     </div>
                     <button class="btn-action" onclick="goToStep(3)">Avançar para Horário</button>
                 </div>
@@ -378,11 +413,10 @@
                 <div class="step-panel" id="panel-3">
                     <div class="panel-header">
                         <h3>Escolha o horário</h3>
-                        <p>Selecione o melhor horário para você.</p>
+                        <p>Horários disponíveis para o dia selecionado (intervalos de 50 min).</p>
                     </div>
-                    <div class="form-group">
-                        <label for="timeInput">Horário disponível</label>
-                        <input type="time" id="timeInput">
+                    <div id="timeGrid" class="time-grid">
+                        <!-- Horários gerados dinamicamente via JS -->
                     </div>
                     <button class="btn-action" onclick="goToStep(4)">Avançar para Seus Dados</button>
                 </div>
@@ -420,10 +454,100 @@
 
     <script>
         let selectedServiceData = null;
+        let selectedTime = null;
+
+        // Calcula a grade de horários (passos de 50 minutos) de acordo com o dia da semana
+        function generateTimeSlotsForDate(dateString) {
+            const dateParts = dateString.split('-');
+            const dateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+            const dayOfWeek = dateObj.getDay(); // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
+
+            let startMinutes = 0;
+            let endMinutes = 0;
+
+            if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+                // Segunda a Sexta: 14:00 às 21:00
+                startMinutes = 14 * 60;
+                endMinutes = 21 * 60;
+            } else if (dayOfWeek === 6) {
+                // Sábado: 19:00 às 22:00
+                startMinutes = 19 * 60;
+                endMinutes = 22 * 60;
+            } else if (dayOfWeek === 0) {
+                // Domingo: 09:00 às 18:00
+                startMinutes = 9 * 60;
+                endMinutes = 18 * 60;
+            }
+
+            const slots = [];
+            let current = startMinutes;
+
+            while (current < endMinutes) {
+                const hours = Math.floor(current / 60).toString().padStart(2, '0');
+                const mins = (current % 60).toString().padStart(2, '0');
+                slots.push(`${hours}:${mins}`);
+                current += 50; // Intervalo de 50 min
+            }
+
+            return slots;
+        }
+
+        function renderTimeSlots() {
+            const dateVal = document.getElementById('dateInput').value;
+            const timeGrid = document.getElementById('timeGrid');
+            timeGrid.innerHTML = '';
+            selectedTime = null;
+
+            if (!dateVal) {
+                timeGrid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">Por favor, selecione uma data primeiro.</p>';
+                return;
+            }
+
+            // Recupera agendamentos gravados localmente
+            const bookings = JSON.parse(localStorage.getItem('paivas_bookings') || '{}');
+            const bookedTimes = bookings[dateVal] || [];
+
+            const slots = generateTimeSlotsForDate(dateVal);
+
+            if (slots.length === 0) {
+                timeGrid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">Não há horários para este dia.</p>';
+                return;
+            }
+
+            slots.forEach(time => {
+                const div = document.createElement('div');
+                div.className = 'time-slot';
+                div.innerText = time;
+
+                if (bookedTimes.includes(time)) {
+                    div.classList.add('booked');
+                    div.title = 'Horário indisponível';
+                } else {
+                    if (selectedTime === time) div.classList.add('selected');
+                    div.onclick = () => selectTimeSlot(time, div);
+                }
+
+                timeGrid.appendChild(div);
+            });
+        }
+
+        function selectTimeSlot(time, element) {
+            selectedTime = time;
+            document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+        }
 
         function goToStep(step) {
             if (step > 1 && !selectedServiceData) {
                 alert("Por favor, selecione um serviço primeiro.");
+                return;
+            }
+            if (step > 2 && !document.getElementById('dateInput').value) {
+                alert("Por favor, selecione uma data.");
+                return;
+            }
+            if (step > 3 && !selectedTime) {
+                alert("Por favor, selecione um horário.");
                 return;
             }
 
@@ -432,6 +556,8 @@
 
             document.getElementById(`menu-${step}`).classList.add('active');
             document.getElementById(`panel-${step}`).classList.add('active');
+
+            if (step === 3) renderTimeSlots();
         }
 
         function selectService(name, price, duration) {
@@ -453,13 +579,12 @@
 
         function finishBooking() {
             const dateVal = document.getElementById('dateInput').value;
-            const timeVal = document.getElementById('timeInput').value;
             const locationVal = document.getElementById('locationInput').value;
             const addressVal = document.getElementById('addressInput').value;
             const nameVal = document.getElementById('nameInput').value;
             const phoneVal = document.getElementById('phoneInput').value;
 
-            if (!dateVal || !timeVal || !nameVal || !phoneVal) {
+            if (!dateVal || !selectedTime || !nameVal || !phoneVal) {
                 alert("Por favor, preencha todos os campos obrigatórios.");
                 return;
             }
@@ -469,6 +594,12 @@
                 return;
             }
 
+            // Trava e salva o horário agendado
+            const bookings = JSON.parse(localStorage.getItem('paivas_bookings') || '{}');
+            if (!bookings[dateVal]) bookings[dateVal] = [];
+            bookings[dateVal].push(selectedTime);
+            localStorage.setItem('paivas_bookings', JSON.stringify(bookings));
+
             const dateParts = dateVal.split('-');
             const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
 
@@ -477,7 +608,7 @@
             msg += `📞 *Telefone:* ${phoneVal}\n`;
             msg += `✂️ *Serviço:* ${selectedServiceData.name} (${selectedServiceData.price})\n`;
             msg += `📅 *Data:* ${formattedDate}\n`;
-            msg += `⏰ *Horário:* ${timeVal}\n`;
+            msg += `⏰ *Horário:* ${selectedTime}\n`;
             msg += `📍 *Local:* ${locationVal}\n`;
 
             if (locationVal === 'Na minha casa') {
