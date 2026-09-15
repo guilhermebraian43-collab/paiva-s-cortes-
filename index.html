@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paiva's Cortes - Agendamento</title>
+    
+    <!-- Importação das Fontes: Cinzel (Títulos) e Poppins (Parágrafos) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --bg-color: #12100e;
@@ -14,13 +20,21 @@
             --border-color: #2a2723;
             --hover-bg: #26231f;
             --disabled-color: #3a3632;
+            
+            --font-title: 'Cinzel', serif;
+            --font-body: 'Poppins', sans-serif;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: var(--font-body);
+        }
+
+        /* Aplicação das Fontes nos Títulos */
+        h1, h2, h3, h4, .step-item {
+            font-family: var(--font-title);
         }
 
         body {
@@ -30,6 +44,7 @@
             display: flex;
             justify-content: center;
             padding: 20px;
+            font-family: var(--font-body);
         }
 
         .main-wrapper {
@@ -53,13 +68,15 @@
             font-size: 1.5rem;
             font-weight: 700;
             display: inline-block;
+            letter-spacing: 1px;
         }
 
         .logo-area span {
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 400;
             margin-left: 8px;
+            font-family: var(--font-body);
         }
 
         .header-info {
@@ -67,6 +84,7 @@
             font-size: 0.85rem;
             color: var(--text-muted);
             line-height: 1.4;
+            font-weight: 300;
         }
 
         /* Banner Hero */
@@ -78,17 +96,18 @@
         }
 
         .hero-text h2 {
-            font-size: 3rem;
+            font-size: 2.8rem;
             font-weight: 800;
-            line-height: 1.1;
+            line-height: 1.15;
             margin-bottom: 15px;
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
         }
 
         .hero-text p {
             color: var(--text-muted);
-            font-size: 1rem;
+            font-size: 0.95rem;
             max-width: 400px;
+            font-weight: 300;
         }
 
         .hero-icon svg {
@@ -116,22 +135,25 @@
         }
 
         .step-item {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: var(--text-muted);
             padding: 8px 0;
             border-bottom: 1px solid var(--border-color);
             cursor: pointer;
             transition: color 0.2s;
-            font-weight: 500;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .step-item.active {
             color: var(--text-color);
-            font-weight: 700;
+            font-weight: 800;
         }
 
         .step-item span {
             margin-right: 10px;
+            font-family: var(--font-body);
+            font-weight: 400;
         }
 
         /* Painel Principal */
@@ -148,14 +170,16 @@
         }
 
         .panel-header h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 1.4rem;
+            font-weight: 700;
             margin-bottom: 5px;
+            letter-spacing: 0.5px;
         }
 
         .panel-header p {
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.88rem;
+            font-weight: 300;
         }
 
         /* Lista de Serviços */
@@ -187,19 +211,21 @@
         }
 
         .service-info h4 {
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1rem;
+            font-weight: 700;
             margin-bottom: 4px;
+            letter-spacing: 0.5px;
         }
 
         .service-info span {
             color: var(--text-muted);
             font-size: 0.85rem;
+            font-weight: 300;
         }
 
         .service-price {
-            font-size: 1.1rem;
-            font-weight: 700;
+            font-size: 1.05rem;
+            font-weight: 600;
             color: var(--accent-color);
         }
 
@@ -217,8 +243,8 @@
             border-radius: 6px;
             padding: 14px 0;
             text-align: center;
-            font-weight: 600;
-            font-size: 0.95rem;
+            font-weight: 500;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -232,6 +258,7 @@
             background-color: var(--accent-color);
             color: #12100e;
             border-color: var(--accent-color);
+            font-weight: 600;
         }
 
         .time-slot.booked {
@@ -249,11 +276,12 @@
 
         .form-group label {
             display: block;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
             margin-bottom: 8px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            font-weight: 500;
         }
 
         input, select, textarea {
@@ -263,8 +291,9 @@
             border: 1px solid var(--border-color);
             border-radius: 6px;
             color: var(--text-color);
-            font-size: 1rem;
+            font-size: 0.95rem;
             outline: none;
+            font-weight: 300;
         }
 
         input:focus, select:focus, textarea:focus {
@@ -278,8 +307,10 @@
             color: var(--bg-color);
             border: none;
             border-radius: 6px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
+            font-family: var(--font-title);
+            letter-spacing: 1px;
             cursor: pointer;
             margin-top: 15px;
             transition: opacity 0.2s;
@@ -296,7 +327,7 @@
             }
 
             .hero-text h2 {
-                font-size: 2.2rem;
+                font-size: 2.1rem;
             }
 
             .hero-icon {
@@ -415,9 +446,7 @@
                         <h3>Escolha o horário</h3>
                         <p>Horários disponíveis para o dia selecionado (intervalos de 50 min).</p>
                     </div>
-                    <div id="timeGrid" class="time-grid">
-                        <!-- Horários gerados dinamicamente via JS -->
-                    </div>
+                    <div id="timeGrid" class="time-grid"></div>
                     <button class="btn-action" onclick="goToStep(4)">Avançar para Seus Dados</button>
                 </div>
 
@@ -456,25 +485,21 @@
         let selectedServiceData = null;
         let selectedTime = null;
 
-        // Calcula a grade de horários (passos de 50 minutos) de acordo com o dia da semana
         function generateTimeSlotsForDate(dateString) {
             const dateParts = dateString.split('-');
             const dateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-            const dayOfWeek = dateObj.getDay(); // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
+            const dayOfWeek = dateObj.getDay();
 
             let startMinutes = 0;
             let endMinutes = 0;
 
             if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-                // Segunda a Sexta: 14:00 às 21:00
                 startMinutes = 14 * 60;
                 endMinutes = 21 * 60;
             } else if (dayOfWeek === 6) {
-                // Sábado: 19:00 às 22:00
                 startMinutes = 19 * 60;
                 endMinutes = 22 * 60;
             } else if (dayOfWeek === 0) {
-                // Domingo: 09:00 às 18:00
                 startMinutes = 9 * 60;
                 endMinutes = 18 * 60;
             }
@@ -486,7 +511,7 @@
                 const hours = Math.floor(current / 60).toString().padStart(2, '0');
                 const mins = (current % 60).toString().padStart(2, '0');
                 slots.push(`${hours}:${mins}`);
-                current += 50; // Intervalo de 50 min
+                current += 50;
             }
 
             return slots;
@@ -503,7 +528,6 @@
                 return;
             }
 
-            // Recupera agendamentos gravados localmente
             const bookings = JSON.parse(localStorage.getItem('paivas_bookings') || '{}');
             const bookedTimes = bookings[dateVal] || [];
 
@@ -594,7 +618,6 @@
                 return;
             }
 
-            // Trava e salva o horário agendado
             const bookings = JSON.parse(localStorage.getItem('paivas_bookings') || '{}');
             if (!bookings[dateVal]) bookings[dateVal] = [];
             bookings[dateVal].push(selectedTime);
